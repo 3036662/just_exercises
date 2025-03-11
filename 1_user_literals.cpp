@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <array>
 
 
 // if the overload set includes a literal operator with the parameter type unsigned long long,
@@ -21,6 +22,10 @@ long operator "" _sh (const char* h){
 // otherwise, if the overload set includes a numeric literal operator template, 
 // the user-defined literal expression is treated as a function call operator""X<'c1 ﻿', 'c2 ﻿', 'c3 ﻿'..., 'ck ﻿'>(), 
 // where c1..ck are the individual characters of n and all of them are from the basic character set.
+
+long unpack(){
+    return 0;
+}
 
 template <char Head='x', char... Tail>
 long unpack() {
@@ -48,8 +53,8 @@ long operator "" _vv (){
 // unpack with array
 template  <char ... Args>
 long operator "" _vvv(){
-    std::array<char,sizeof...(Args)> arr(Args...);
-    return std::stoi(std::string(arr));
+    std::array<char,sizeof...(Args)> arr{Args...};
+    return std::stoi(std::string(arr.data()));
 }
 
 
@@ -67,7 +72,7 @@ int main(){
     auto vv = 51013_vv;
     std::cout << "vv = " << vv << "\n";
 
-    auto vvv = 51013_vv;
+    auto vvv = 3510133_vvv;
     std::cout << "vvv = " << vvv << "\n";
 }
 
