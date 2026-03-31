@@ -4,3 +4,8 @@ find_package(Catch2 REQUIRED)
 
 add_test(1_list_el_count 1_list_el_count)
 target_link_libraries(1_list_el_count PRIVATE Catch2::Catch2WithMain)
+
+
+add_executable(2_max_element_recursive 2_max_element_recursive.cpp)
+add_test(2_max_element_recursive 2_max_element_recursive)
+target_link_libraries(2_max_element_recursive PRIVATE Catch2::Catch2WithMain)
