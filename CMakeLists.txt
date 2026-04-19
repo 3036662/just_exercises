@@ -15,3 +15,4 @@ target_link_libraries(20_viewable_range PRIVATE Catch2::Catch2WithMain)
 
 add_subdirectory(asio)
 add_subdirectory(algo)
+add_subdirectory(networking)
