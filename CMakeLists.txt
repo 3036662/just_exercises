@@ -16,3 +16,6 @@ target_link_libraries(20_viewable_range PRIVATE Catch2::Catch2WithMain)
 add_subdirectory(asio)
 add_subdirectory(algo)
 add_subdirectory(networking)
+
+add_executable(21_templ_spec 21_templ_spec.cpp)
+target_link_libraries(21_templ_spec PRIVATE Catch2::Catch2WithMain)
