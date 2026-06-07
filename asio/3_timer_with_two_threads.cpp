@@ -12,7 +12,7 @@ void timer_expired(std::string id) {
 int main() {
     namespace asio=boost::asio;
 
-    asio::io_service service;
+    asio::io_context service;
 
     asio::deadline_timer timer1(service,boost::posix_time::seconds(5));
     asio::deadline_timer timer2(service,boost::posix_time::seconds(5));

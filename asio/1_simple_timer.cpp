@@ -6,7 +6,7 @@
 int main() {
     namespace asio=boost::asio;
 
-    asio::io_service service;
+    asio::io_context service;
     asio::deadline_timer timer(service, boost::posix_time::seconds(5));
 
     timer.async_wait([](auto ...vn) {

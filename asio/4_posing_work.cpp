@@ -6,11 +6,11 @@
 int main() {
     namespace asio=boost::asio;
 
-    asio::io_service service;
+    asio::io_context service;
 
-    service.post([]{std::cout <<"eat\n";});
-    service.post([]{std::cout <<"drink\n";});
-    service.post([]{std::cout <<"and be merry\n";});
+    boost::asio::post(service,[]{std::cout <<"eat\n";});
+    boost::asio::post(service,[]{std::cout <<"drink\n";});
+    boost::asio::post(service,[]{std::cout <<"and be merry\n";});
 
     std::thread butler([&]{service.run();});
 

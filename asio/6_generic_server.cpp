@@ -1,5 +1,5 @@
 #include <boost/asio.hpp>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <deque>
 
 template <typename ConnectionHandler>
@@ -8,11 +8,11 @@ class asio_generic_server {
 
  public:
   explicit asio_generic_server(int thread_count = 1)
-    : thread_count_(thread_count), acceptor_(io_service_) {}
+    : thread_count_(thread_count), acceptor_(io_context_) {}
 
   void start_server(uint16_t port) {
     // create a handler
-    auto handler = std::make_shared<ConnectionHandler>(io_service_);
+    auto handler = std::make_shared<ConnectionHandler>(io_context_);
 
     // set up the acceptor to listen on the tcp port
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), port);
@@ -26,7 +26,7 @@ class asio_generic_server {
 
     // start pool of threads to process the asio events
     for (int i = 0; i < thread_count_; ++i) {
-      thread_pool_.emplace_back([=] { io_service_.run(); });
+      thread_pool_.emplace_back([=] { io_context_.run(); });
     }
   }
 
@@ -45,7 +45,7 @@ class asio_generic_server {
 
     handler->start();
 
-    auto new_handler = std::make_shared<ConnectionHandler>(io_service_);
+    auto new_handler = std::make_shared<ConnectionHandler>(io_context_);
     acceptor_.async_accept(new_handler->socket(), [=](auto ec) {
       handle_new_connection(new_handler, ec);
     });
@@ -53,7 +53,7 @@ class asio_generic_server {
 
   int thread_count_;
   std::vector<std::thread> thread_pool_;
-  boost::asio::io_service io_service_;
+  boost::asio::io_context io_context_;
   boost::asio::ip::tcp::acceptor acceptor_;
 };
 
@@ -61,7 +61,7 @@ class asio_generic_server {
 
 class chat_handler : public std::enable_shared_from_this<chat_handler> {
  public:
-  explicit chat_handler(boost::asio::io_service& service)
+  explicit chat_handler(boost::asio::io_context& service)
     : service_(service), socket_(service), write_strand_(service) {}
 
   boost::asio::ip::tcp::socket& socket() { return socket_; }
@@ -91,7 +91,7 @@ class chat_handler : public std::enable_shared_from_this<chat_handler> {
   }
 
   void send(std::string msg) {
-    service_.post(write_strand_.wrap(
+    boost::asio::post(write_strand_.wrap(
       [me = shared_from_this(), msg]() { me->queue_message(msg); }));
   }
 
@@ -123,9 +123,9 @@ class chat_handler : public std::enable_shared_from_this<chat_handler> {
     }
   }
 
-  boost::asio::io_service& service_;
+  boost::asio::io_context& service_;
   boost::asio::ip::tcp::socket socket_;
-  boost::asio::io_service::strand write_strand_;
+  boost::asio::io_context::strand write_strand_;
   boost::asio::streambuf in_packet_;
   std::deque<std::string> send_packet_queue_;
 };

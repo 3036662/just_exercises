@@ -13,7 +13,7 @@ long operator ""_huebin (unsigned long long h){
 // otherwise, the overload set must include either, but not both, a raw literal operator or a
 // numeric literal operator template. If the overload set includes a raw literal operator,
 // the user-defined literal expression is treated as a function call operator""X("n ﻿");
-long operator "" _sh (const char* h){
+long operator ""_sh (const char* h){
     return std::stoi(h);
 }
 
@@ -35,7 +35,7 @@ long unpack() {
 }
 
 template <char ... Args> 
-long operator "" _v (){
+long operator ""_v (){
     return unpack<Args...>();
 }
 
@@ -43,7 +43,7 @@ long operator "" _v (){
 // ---
 // folding
 template <char ... Args> 
-long operator "" _vv (){
+long operator ""_vv (){
     std::string s;
     ((s +=  Args),...); // fold
     return std::stoi(s);
@@ -52,7 +52,7 @@ long operator "" _vv (){
 
 // unpack with array
 template  <char ... Args>
-long operator "" _vvv(){
+long operator ""_vvv(){
     std::array<char,sizeof...(Args)> arr{Args...};
     return std::stoi(std::string(arr.data()));
 }
